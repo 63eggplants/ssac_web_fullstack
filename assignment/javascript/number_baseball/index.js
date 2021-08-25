@@ -87,9 +87,9 @@ function countBall(userNum) {
 }
 
 // 결과 추가
-function addResult(cnt, userNum, strikeCnt, ballCnt) {
+function addResult(obj) {
   const p = document.createElement('p');
-  p.innerText = `#${cnt}-${userNum}: ${strikeCnt}S${ballCnt}B`;
+  p.innerText = `#${obj.cnt}-${obj.userNum}: ${obj.strikeCnt}S${obj.ballCnt}B`;
   result.prepend(p);
 }
 
@@ -117,7 +117,8 @@ form.addEventListener('submit', e => {
   const ballCnt = countBall(userNum);
 
   // 결과 추가
-  addResult(cnt, userNum, strikeCnt, ballCnt);
+  const reulstObj = { cnt, userNum, strikeCnt, ballCnt };
+  addResult(reulstObj);
 
   // 승
   if (strikeCnt === DIGITS) {
