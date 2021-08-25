@@ -1,0 +1,36 @@
+input {
+  all: unset;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+.input {
+  border-bottom: 1px black solid;
+  margin-bottom: 1rem;
+}
+
+.pop-up {
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+  width: 15rem;
+  height: 2rem;
+  padding: 0.5rem;
+  background-color: rgb(0, 0, 0, 1);
+}
+
+.pop-up__message {
+  color: white;
+  margin-right: 0.5rem;
+}
+.invisible {
+  display: none;
+}
