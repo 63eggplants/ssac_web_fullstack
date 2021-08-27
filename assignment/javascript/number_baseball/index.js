@@ -122,7 +122,7 @@ form.addEventListener('submit', e => {
 
   // 승
   if (strikeCnt === DIGITS) {
-    showPopUp('YOU WON');
+    showPopUp('YOU WIN');
     return;
   }
 
