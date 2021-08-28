@@ -8,53 +8,54 @@ const replayBtn = document.querySelector('.pop-up__replay-btn');
 const DIGITS = 3;
 const COUNTS = 9;
 const INVISIBLE = 'invisible';
+const DISABLED = 'disabled';
 
-let answer;
-let cnt;
+let answer = '';
+let cnt = 0;
 
 // 정답 만들기
-function makeAnswer() {
-  function makeRandomNumber() {
+const makeAnswer = function () {
+  const makeRandomNumber = function () {
     return String(Math.floor(Math.random() * 10));
-  }
+  };
 
-  let answer = makeRandomNumber();
+  let newAnswer = makeRandomNumber();
 
   for (let i = 1; i < DIGITS; i += 1) {
     let digit = makeRandomNumber();
 
-    while (answer.includes(digit)) {
+    while (newAnswer.includes(digit)) {
       digit = makeRandomNumber();
     }
-    answer += digit;
+    newAnswer += digit;
   }
 
-  console.log(answer);
+  console.log(newAnswer);
 
-  return answer;
-}
+  return newAnswer;
+};
 
 // 초기화 함수
-function init() {
+const initializeGame = function () {
   answer = makeAnswer();
   cnt = 0;
   popUp.classList.add(INVISIBLE);
   result.innerText = '';
-  input.removeAttribute('disabled');
+  input.removeAttribute(DISABLED);
   input.focus();
-}
+};
 
 // 전체 자릿수 판별
-function checkDigits(userNum) {
+const checkDigits = function (userNum) {
   if (userNum.length !== DIGITS) {
     alert('please input 3-digit number');
     return 0;
   }
   return 1;
-}
+};
 
 // 중복 자릿수 판별
-function checkSameDigit(userNum) {
+const checkSameDigit = function (userNum) {
   for (let i = 0; i < DIGITS; i += 1) {
     if (userNum.indexOf(userNum[i]) !== i) {
       alert('all digits have to be different');
@@ -62,10 +63,10 @@ function checkSameDigit(userNum) {
     }
   }
   return 1;
-}
+};
 
 // strike 갯수 계산
-function countStrike(userNum) {
+const countStrike = function (userNum) {
   let n = 0;
   for (let i = 0; i < DIGITS; i++) {
     if (answer[i] === userNum[i]) {
@@ -73,10 +74,10 @@ function countStrike(userNum) {
     }
   }
   return n;
-}
+};
 
 // ball 갯수 계산
-function countBall(userNum) {
+const countBall = function (userNum) {
   let n = 0;
   for (let i = 0; i < DIGITS; i++) {
     if (answer[i] !== userNum[i] && answer.includes(userNum[i])) {
@@ -84,21 +85,21 @@ function countBall(userNum) {
     }
   }
   return n;
-}
+};
 
 // 결과 추가
-function addResult(obj) {
+const addResult = function (obj) {
   const p = document.createElement('p');
   p.innerText = `#${obj.cnt}-${obj.userNum}: ${obj.strikeCnt}S${obj.ballCnt}B`;
   result.prepend(p);
-}
+};
 
 // 게임 승패 출력
-function showPopUp(message) {
+const showPopUp = function (message) {
   popUp.classList.remove(INVISIBLE);
   popUpMessage.innerText = message;
   input.setAttribute('disabled', '');
-}
+};
 
 form.addEventListener('submit', e => {
   e.preventDefault();
@@ -132,5 +133,12 @@ form.addEventListener('submit', e => {
   }
 });
 
-init();
-replayBtn.addEventListener('click', init);
+replayBtn.addEventListener('click', initializeGame);
+
+initializeGame();
+
+// const getElement = function (elem) {
+//   if (document.readyState === 'interactive') {
+//     return document.querySelector(`.${elem}`);
+//   }
+// };
