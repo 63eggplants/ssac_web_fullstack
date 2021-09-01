@@ -11,7 +11,17 @@ const INVISIBLE = 'invisible';
 const DISABLED = 'disabled';
 
 let answer = '';
-let cnt = 0;
+const gameCounter = (function () {
+  let num = 0;
+  return {
+    increase() {
+      return ++num;
+    },
+    initialize() {
+      num = 0;
+    },
+  };
+})();
 
 // 정답 만들기
 const makeAnswer = function () {
@@ -21,7 +31,7 @@ const makeAnswer = function () {
 
   let newAnswer = makeRandomNumber();
 
-  for (let i = 1; i < DIGITS; i += 1) {
+  for (let i = 1; i < DIGITS; i++) {
     let digit = makeRandomNumber();
 
     while (newAnswer.includes(digit)) {
@@ -38,7 +48,7 @@ const makeAnswer = function () {
 // 초기화 함수
 const initializeGame = function () {
   answer = makeAnswer();
-  cnt = 0;
+  gameCounter.initialize();
   popUp.classList.add(INVISIBLE);
   result.innerText = '';
   input.removeAttribute(DISABLED);
@@ -56,7 +66,7 @@ const checkDigits = function (userNum) {
 
 // 중복 자릿수 판별
 const checkSameDigit = function (userNum) {
-  for (let i = 0; i < DIGITS; i += 1) {
+  for (let i = 0; i < DIGITS; i++) {
     if (userNum.indexOf(userNum[i]) !== i) {
       alert('all digits have to be different');
       return 0;
@@ -90,7 +100,7 @@ const countBall = function (userNum) {
 // 결과 추가
 const addResult = function (obj) {
   const p = document.createElement('p');
-  p.innerText = `#${obj.cnt}-${obj.userNum}: ${obj.strikeCnt}S${obj.ballCnt}B`;
+  p.innerText = `#${obj.gameCnt}-${obj.userNum}: ${obj.strikeCnt}S${obj.ballCnt}B`;
   result.prepend(p);
 };
 
@@ -113,12 +123,12 @@ form.addEventListener('submit', e => {
   if (!checkSameDigit(userNum)) return;
 
   // strike, ball 계산 후 할당
-  cnt += 1;
+  const gameCnt = gameCounter.increase();
   const strikeCnt = countStrike(userNum);
   const ballCnt = countBall(userNum);
 
   // 결과 추가
-  const reulstObj = { cnt, userNum, strikeCnt, ballCnt };
+  const reulstObj = { gameCnt, userNum, strikeCnt, ballCnt };
   addResult(reulstObj);
 
   // 승
@@ -128,7 +138,7 @@ form.addEventListener('submit', e => {
   }
 
   // 패
-  if (cnt === COUNTS) {
+  if (gameCnt === COUNTS) {
     showPopUp('YOU LOSE');
   }
 });
@@ -136,9 +146,3 @@ form.addEventListener('submit', e => {
 replayBtn.addEventListener('click', initializeGame);
 
 initializeGame();
-
-// const getElement = function (elem) {
-//   if (document.readyState === 'interactive') {
-//     return document.querySelector(`.${elem}`);
-//   }
-// };
