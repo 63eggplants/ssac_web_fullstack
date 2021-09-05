@@ -10,7 +10,8 @@ const COUNTS = 9;
 const INVISIBLE = 'invisible';
 const DISABLED = 'disabled';
 
-let answer = '';
+const answer = [];
+
 const gameCounter = (function () {
   let num = 0;
   return {
@@ -29,25 +30,22 @@ const makeAnswer = function () {
     return String(Math.floor(Math.random() * 10));
   };
 
-  let newAnswer = makeRandomNumber();
+  for (let i = 0; i < DIGITS; i++) {
+    let digit;
 
-  for (let i = 1; i < DIGITS; i++) {
-    let digit = makeRandomNumber();
-
-    while (newAnswer.includes(digit)) {
+    do {
       digit = makeRandomNumber();
-    }
-    newAnswer += digit;
+    } while (answer.includes(digit));
+
+    answer[i] = digit;
   }
 
-  console.log(newAnswer);
-
-  return newAnswer;
+  console.log(answer);
+  return answer;
 };
 
-// 초기화 함수
 const initializeGame = function () {
-  answer = makeAnswer();
+  makeAnswer();
   gameCounter.initialize();
   popUp.classList.add(INVISIBLE);
   result.innerText = '';
@@ -55,27 +53,23 @@ const initializeGame = function () {
   input.focus();
 };
 
-// 전체 자릿수 판별
-const checkDigits = function (userNum) {
+const hasThreeDigit = function (userNum) {
   if (userNum.length !== DIGITS) {
-    alert('please input 3-digit number');
-    return 0;
+    return false;
   }
-  return 1;
+  return true;
 };
 
-// 중복 자릿수 판별
-const checkSameDigit = function (userNum) {
+const hasDifferentDigit = function (userNum) {
   for (let i = 0; i < DIGITS; i++) {
     if (userNum.indexOf(userNum[i]) !== i) {
-      alert('all digits have to be different');
-      return 0;
+      return false;
     }
   }
-  return 1;
+
+  return true;
 };
 
-// strike 갯수 계산
 const countStrike = function (userNum) {
   let n = 0;
   for (let i = 0; i < DIGITS; i++) {
@@ -86,7 +80,6 @@ const countStrike = function (userNum) {
   return n;
 };
 
-// ball 갯수 계산
 const countBall = function (userNum) {
   let n = 0;
   for (let i = 0; i < DIGITS; i++) {
@@ -97,14 +90,12 @@ const countBall = function (userNum) {
   return n;
 };
 
-// 결과 추가
 const addResult = function (obj) {
   const p = document.createElement('p');
   p.innerText = `#${obj.gameCnt}-${obj.userNum}: ${obj.strikeCnt}S${obj.ballCnt}B`;
   result.prepend(p);
 };
 
-// 게임 승패 출력
 const showPopUp = function (message) {
   popUp.classList.remove(INVISIBLE);
   popUpMessage.innerText = message;
@@ -113,31 +104,28 @@ const showPopUp = function (message) {
 
 form.addEventListener('submit', e => {
   e.preventDefault();
-  const userNum = String(input.value);
+  const userNum = [...input.value];
   input.value = '';
 
-  // 3자리가 아닌 경우
-  if (!checkDigits(userNum)) return;
+  if (!hasThreeDigit(userNum)) {
+    return alert(`please input ${DIGITS}-digit number`);
+  }
 
-  // 중복된 자릿수가 있는 경우
-  if (!checkSameDigit(userNum)) return;
+  if (!hasDifferentDigit(userNum)) {
+    return alert('all digits have to be different');
+  }
 
-  // strike, ball 계산 후 할당
   const gameCnt = gameCounter.increase();
   const strikeCnt = countStrike(userNum);
   const ballCnt = countBall(userNum);
 
-  // 결과 추가
   const reulstObj = { gameCnt, userNum, strikeCnt, ballCnt };
   addResult(reulstObj);
 
-  // 승
   if (strikeCnt === DIGITS) {
-    showPopUp('YOU WIN');
-    return;
+    return showPopUp('YOU WIN');
   }
 
-  // 패
   if (gameCnt === COUNTS) {
     showPopUp('YOU LOSE');
   }
