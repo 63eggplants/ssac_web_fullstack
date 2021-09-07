@@ -70,24 +70,18 @@ const hasDifferentDigit = function (userNum) {
   return true;
 };
 
-const countStrike = function (userNum) {
-  let n = 0;
+const countStrikeAndBall = function (userNum) {
+  let strikeCnt = 0;
+  let ballCnt = 0;
+
   for (let i = 0; i < DIGITS; i++) {
     if (answer[i] === userNum[i]) {
-      n += 1;
+      strikeCnt += 1;
+    } else if (answer.includes(userNum[i])) {
+      ballCnt += 1;
     }
   }
-  return n;
-};
-
-const countBall = function (userNum) {
-  let n = 0;
-  for (let i = 0; i < DIGITS; i++) {
-    if (answer[i] !== userNum[i] && answer.includes(userNum[i])) {
-      n += 1;
-    }
-  }
-  return n;
+  return { strikeCnt, ballCnt };
 };
 
 const addResult = function (obj) {
@@ -116,8 +110,7 @@ form.addEventListener('submit', e => {
   }
 
   const gameCnt = gameCounter.increase();
-  const strikeCnt = countStrike(userNum);
-  const ballCnt = countBall(userNum);
+  const { strikeCnt, ballCnt } = countStrikeAndBall(userNum);
 
   const reulstObj = { gameCnt, userNum, strikeCnt, ballCnt };
   addResult(reulstObj);
